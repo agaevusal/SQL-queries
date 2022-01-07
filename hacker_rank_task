@@ -1,0 +1,36 @@
+select doctor, professor , singer, actor
+from 
+(select doctor, row_number()over() as n from 
+        (select  
+               (case when occupation = 'Doctor' then Name end) doctor
+        from occupations order by  doctor is null, doctor asc )  sub_doctor)doctor
+
+join 
+
+(select professor, row_number()over() as n from 
+        (select  
+               (case when occupation = 'Professor' then Name end) professor
+        from occupations order by  professor is null, professor asc )sub_professor) professor
+        
+using(n)
+
+join
+
+(select singer, row_number()over() as n from 
+        (select  
+               (case when occupation = 'Singer' then Name end) singer
+        from occupations order by  singer is null, singer asc )  sub_singer) singer
+
+using(n) 
+
+join
+
+(select actor, row_number()over() as n from 
+        (select  
+               (case when occupation = 'Actor' then Name end) actor
+        from occupations order by  actor is null, actor asc )  sub_actor) actor
+
+using(n)
+
+where not(doctor is null and professor is null and singer is null and actor is null)
+
